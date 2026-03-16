@@ -114,10 +114,43 @@ export default function Home() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Applica gli stessi filtri della preview
-    ctx.filter = `${negative ? "invert(1)" : "invert(0)"} brightness(${fakeBrightness})`;
+    // Disegna il frame video "pulito"
     ctx.drawImage(video, 0, 0, width, height);
 
+    // Legge i pixel del canvas
+    const imageData = ctx.getImageData(0, 0, width, height);
+    const data = imageData.data;
+
+    // fakeBrightness: 1 = normale
+    // esempio: 0.8 più scuro, 1.2 più chiaro
+    const brightness = fakeBrightness;
+
+    for (let i = 0; i < data.length; i += 4) {
+      let r = data[i];
+      let g = data[i + 1];
+      let b = data[i + 2];
+
+      // Applica brightness
+      r = Math.max(0, Math.min(255, r * brightness));
+      g = Math.max(0, Math.min(255, g * brightness));
+      b = Math.max(0, Math.min(255, b * brightness));
+
+      // Applica negativo se attivo
+      if (negative) {
+        r = 255 - r;
+        g = 255 - g;
+        b = 255 - b;
+      }
+
+      data[i] = r;
+      data[i + 1] = g;
+      data[i + 2] = b;
+    }
+
+    // Rimette i pixel modificati nel canvas
+    ctx.putImageData(imageData, 0, 0);
+
+    // Esporta JPG
     canvas.toBlob(
       (blob) => {
         if (!blob) return;
