@@ -93,63 +93,44 @@ export default function Home() {
   }
 
   async function takePhoto() {
-    try {
-      if (!videoRef.current) return;
+  try {
+    if (!videoRef.current) return;
 
-      const video = videoRef.current;
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-      // Prova via ImageCapture se disponibile
-      if (track && "ImageCapture" in window) {
-        try {
-          const imageCapture = new (window as Window & typeof globalThis & {
-            ImageCapture: new (track: MediaStreamTrack) => {
-              takePhoto: () => Promise<Blob>;
-            };
-          }).ImageCapture(track);
+    const width = video.videoWidth;
+    const height = video.videoHeight;
 
-          const blob = await imageCapture.takePhoto();
-          downloadBlob(blob, `negative-camera-${Date.now()}.jpg`);
-          return;
-        } catch (err) {
-          console.warn("takePhoto non riuscito, uso canvas fallback.", err);
-        }
-      }
-
-      // Fallback via canvas
-      const canvas = canvasRef.current;
-      if (!canvas) return;
-
-      const width = video.videoWidth;
-      const height = video.videoHeight;
-
-      if (!width || !height) {
-        setError("Video non pronto per lo scatto");
-        return;
-      }
-
-      canvas.width = width;
-      canvas.height = height;
-
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
-
-      // Disegniamo il frame
-      ctx.filter = `${negative ? "invert(1)" : "invert(0)"} brightness(${fakeBrightness})`;
-      ctx.drawImage(video, 0, 0, width, height);
-
-      canvas.toBlob(
-        (blob) => {
-          if (!blob) return;
-          downloadBlob(blob, `negative-camera-${Date.now()}.jpg`);
-        },
-        "image/jpeg",
-        0.95
-      );
-    } catch (err) {
-      console.error(err);
-      setError("Errore durante lo scatto della foto");
+    if (!width || !height) {
+      setError("Video non pronto per lo scatto");
+      return;
     }
+
+    canvas.width = width;
+    canvas.height = height;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    // Applica gli stessi filtri della preview
+    ctx.filter = `${negative ? "invert(1)" : "invert(0)"} brightness(${fakeBrightness})`;
+    ctx.drawImage(video, 0, 0, width, height);
+
+    canvas.toBlob(
+      (blob) => {
+        if (!blob) return;
+        downloadBlob(blob, `negative-camera-${Date.now()}.jpg`);
+      },
+      "image/jpeg",
+      0.95
+    );
+  } catch (err) {
+    console.error(err);
+    setError("Errore durante lo scatto della foto");
   }
+}
 
   function downloadBlob(blob: Blob, filename: string) {
     const url = URL.createObjectURL(blob);
