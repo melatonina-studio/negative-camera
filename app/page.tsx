@@ -243,7 +243,7 @@ export default function Home() {
           max={exposureMax}
           step={exposureStep}
           value={exposureValue}
-          onChange={(e) => handleExposureChange(Number(e.target.value))}
+          onChange={(e) => handleExposureChange (exposureMax - Number(e.target.value) + exposureMin)}
           style={{
             writingMode: "vertical-lr",
             WebkitAppearance: "slider-vertical",
