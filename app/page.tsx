@@ -9,7 +9,8 @@ export default function Home() {
   const [negative, setNegative] = useState(true);
   const [error, setError] = useState("");
   const [streamReady, setStreamReady] = useState(false);
-
+  const [showExposure, setShowExposure] = useState(false);  
+  
   const [track, setTrack] = useState<MediaStreamTrack | null>(null);
   const [supportsExposure, setSupportsExposure] = useState(false);
 
@@ -206,105 +207,132 @@ export default function Home() {
 
       <canvas ref={canvasRef} style={{ display: "none" }} />
 
+      <>
+  {/* Colonna destra controlli */}
+  <div
+    style={{
+      position: "absolute",
+      right: 16,
+      bottom: 110,
+      zIndex: 30,
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      gap: 12,
+    }}
+  >
+    {/* Slider esposizione, visibile solo quando aperto */}
+    {showExposure && (
       <div
         style={{
-          position: "absolute",
-          left: 16,
-          right: 16,
-          bottom: 24,
-          zIndex: 20,
-          display: "grid",
-          gap: 12,
+          width: 54,
+          height: 180,
+          borderRadius: 999,
+          background: "rgba(0,0,0,0.45)",
+          backdropFilter: "blur(10px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "14px 0",
         }}
       >
-        <div
+        <input
+          type="range"
+          min={exposureMin}
+          max={exposureMax}
+          step={exposureStep}
+          value={exposureValue}
+          onChange={(e) => handleExposureChange(Number(e.target.value))}
           style={{
-            background: "rgba(0,0,0,0.55)",
-            backdropFilter: "blur(8px)",
-            padding: 14,
-            borderRadius: 18,
-            color: "white",
+            writingMode: "vertical-lr",
+            WebkitAppearance: "slider-vertical",
+            width: 24,
+            height: 140,
           }}
-        >
-          <label
-            style={{
-              display: "block",
-              fontSize: 14,
-              marginBottom: 8,
-              fontWeight: 700,
-            }}
-          >
-            EXPOSURE {supportsExposure ? "(camera)" : "(visual fallback)"}:{" "}
-            {exposureValue.toFixed(2)}
-          </label>
-
-          <input
-            type="range"
-            min={exposureMin}
-            max={exposureMax}
-            step={exposureStep}
-            value={exposureValue}
-            onChange={(e) => handleExposureChange(Number(e.target.value))}
-            style={{ width: "100%" }}
-          />
-        </div>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 10,
-          }}
-        >
-          <button
-            onClick={() => setNegative((prev) => !prev)}
-            style={buttonStyle}
-          >
-            {negative ? "POSITIVE" : "NEGATIVE"}
-          </button>
-
-          <button
-            onClick={takePhoto}
-            disabled={!streamReady}
-            style={{
-              ...buttonStyle,
-              opacity: streamReady ? 1 : 0.5,
-            }}
-          >
-            SCATTA
-          </button>
-        </div>
+        />
       </div>
+    )}
 
-      {error && (
-        <div
-          style={{
-            position: "absolute",
-            top: 20,
-            left: 20,
-            right: 20,
-            zIndex: 30,
-            color: "white",
-            textAlign: "center",
-            background: "rgba(180,0,0,0.75)",
-            padding: "10px 14px",
-            borderRadius: 12,
-          }}
-        >
-          {error}
-        </div>
-      )}
+    {/* Bottone esposizione */}
+    <button
+      onClick={() => setShowExposure((prev) => !prev)}
+      style={sideButtonStyle}
+      aria-label="Esposizione"
+      title="Esposizione"
+    >
+      ☀
+    </button>
+
+    {/* Bottone negativo/positivo */}
+    <button
+      onClick={() => setNegative((prev) => !prev)}
+      style={sideButtonStyle}
+      aria-label="Negativo positivo"
+      title="Negativo / Positivo"
+    >
+      ◐
+    </button>
+  </div>
+
+  {/* Pulsante scatto in basso al centro */}
+  <div
+    style={{
+      position: "absolute",
+      left: "50%",
+      bottom: 28,
+      transform: "translateX(-50%)",
+      zIndex: 30,
+    }}
+  >
+    <button
+      onClick={takePhoto}
+      disabled={!streamReady}
+      aria-label="Scatta foto"
+      title="Scatta foto"
+      style={{
+        width: 78,
+        height: 78,
+        borderRadius: "50%",
+        border: "4px solid rgba(255,255,255,0.95)",
+        background: "rgba(255,255,255,0.15)",
+        backdropFilter: "blur(8px)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        cursor: "pointer",
+        opacity: streamReady ? 1 : 0.45,
+        boxShadow: "0 8px 30px rgba(0,0,0,0.35)",
+      }}
+    >
+      <span
+        style={{
+          width: 58,
+          height: 58,
+          borderRadius: "50%",
+          background: "white",
+          display: "block",
+        }}
+      />
+    </button>
+  </div>
+</>
     </main>
   );
 }
 
-const buttonStyle: React.CSSProperties = {
+const sideButtonStyle: React.CSSProperties = {
+  width: 54,
+  height: 54,
   border: "none",
-  borderRadius: 999,
-  padding: "16px 18px",
-  fontSize: 15,
-  fontWeight: 800,
-  background: "white",
-  color: "black",
+  borderRadius: "50%",
+  background: "rgba(0,0,0,0.45)",
+  backdropFilter: "blur(10px)",
+  color: "white",
+  fontSize: 22,
+  fontWeight: 700,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
   cursor: "pointer",
+  boxShadow: "0 8px 24px rgba(0,0,0,0.28)",
 };
