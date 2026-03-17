@@ -223,37 +223,37 @@ export default function Home() {
   >
     {/* Slider esposizione, visibile solo quando aperto */}
     {showExposure && (
-  <div
-    style={{
-      width: 74,
-      height: 240,
-      borderRadius: 999,
-      background: "rgba(0,0,0,0.55)",
-      backdropFilter: "blur(10px)",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      padding: "18px 0",
-      boxShadow: "0 8px 24px rgba(0,0,0,0.28)",
-    }}
-  >
-    <input
-      type="range"
-      min={exposureMin}
-      max={exposureMax}
-      step={exposureStep}
-      value={exposureValue}
-      onChange={(e) => handleExposureChange(Number(e.target.value))}
-      style={{
-        writingMode: "vertical-lr",
-        WebkitAppearance: "slider-vertical",
-        width: 38,
-        height: 180,
-        touchAction: "none",
-      }}
-    />
-  </div>
-)}
+      <div
+        style={{
+          width: 54,
+          height: 180,
+          borderRadius: 999,
+          background: "rgba(0,0,0,0.45)",
+          backdropFilter: "blur(10px)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "14px 0",
+        }}
+      >
+        <input
+          className="exposure-slider"
+          type="range"
+          min={exposureMin}
+          max={exposureMax}
+          step={exposureStep}
+          value={exposureValue}
+          onChange={(e) => handleExposureChange(Number(e.target.value))}
+          style={{
+            writingMode: "vertical-lr",
+            WebkitAppearance: "slider-vertical",
+            width: 24,
+            height: 140,
+            touchAction: "none",
+          }}
+        />
+      </div>
+    )}
 
     {/* Bottone esposizione */}
     <button
