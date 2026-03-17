@@ -62,13 +62,14 @@ body {
 .exposure-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 999px;
   background: #ffffff;
-  border: 2px solid rgba(0, 0, 0, 0.18);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
-  cursor: pointer;
+  border: 2px solid rgba(0,0,0,0.18);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.28);
+
+  margin-left: -13px;   /* ⭐ QUESTO È IL FIX */
 }
 
 /* track */
@@ -93,4 +94,12 @@ body {
   width: 6px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.9);
+}
+
+.exposure-slider::-webkit-slider-thumb {
+  transition: transform .12s ease;
+}
+
+.exposure-slider:active::-webkit-slider-thumb {
+  transform: scale(1.18);
 }
