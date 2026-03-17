@@ -80,8 +80,8 @@ body {
 
 /* Firefox */
 .exposure-slider::-moz-range-thumb {
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   border-radius: 999px;
   background: #ffffff;
   border: 2px solid rgba(0, 0, 0, 0.18);
