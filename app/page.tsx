@@ -72,6 +72,16 @@ export default function Home() {
     };
   }, []);
 
+  useEffect(() => {
+  const video = videoRef.current;
+  if (!video) return;
+
+  video.setAttribute("playsinline", "true");
+  video.setAttribute("webkit-playsinline", "true");
+  video.setAttribute("autoplay", "true");
+  video.removeAttribute("controls");
+}, []);
+
   async function handleExposureChange(value: number) {
     setExposureValue(value);
 
@@ -194,11 +204,14 @@ export default function Home() {
         autoPlay
         muted
         playsInline
+        controls={false}
+        disablePictureInPicture
+        controlsList="nodownload noplaybackrate noremoteplayback nofullscreen"
         style={{
           position: "fixed",
           inset: 0,
           width: "100%",
-          height: "100%",
+          height: "100%", 
           objectFit: "cover",
           filter: videoFilter,
           background: "black",
@@ -208,19 +221,19 @@ export default function Home() {
       <canvas ref={canvasRef} style={{ display: "none" }} />
 
       <>
-  {/* Colonna destra controlli */}
-  <div
-    style={{
-      position: "absolute",
-      right: 16,
-      bottom: 110,
-      zIndex: 30,
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      gap: 12,
-    }}
-  >
+      {/* Colonna destra controlli */}
+      <div
+        style={{
+          position: "absolute",
+          right: 16,
+          bottom: 110,
+          zIndex: 30,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 12,
+        }}
+      >
     {/* Slider esposizione, visibile solo quando aperto */}
     {showExposure && (
       <div
